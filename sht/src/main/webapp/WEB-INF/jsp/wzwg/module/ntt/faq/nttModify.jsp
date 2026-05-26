@@ -1,0 +1,403 @@
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/jsp/wzwg/cmm/include/incTaglibs.jsp" %>
+
+<script src="/jquery/js/jquery.form.min.js"></script>
+
+<c:set var="adminAuthAt" value="N"/>
+
+<c:if test="${paramVO.cmntUseAt eq 'Y'}">
+	<c:if test="${sessionScope.cmntMngrAt == true}">
+		<c:set var="adminAuthAt" value="Y"/>
+	</c:if>
+</c:if>	
+
+<c:if test="${sessionScope.SADMIN_AT or sessionScope.NADMIN_AT or sessionScope.CNTNTS_ADMIN_AT}">
+	<c:set var="adminAuthAt" value="Y"/>
+</c:if>	
+
+<script type="text/javascript">
+try{document.title = $('#menuPath').val().replace(/>/gi,'-') + '<spring:message code="wzwg.cmm.word.updt" />';}catch(e){console.log(e.message);}
+
+	$(document).ready(function(){
+		$('#contentsCaption').html($('#menuNm').val() + ' <spring:message code="wzwg.module.word.postupdt" />');
+		
+		fnChangeSubospecList('<c:out value="${resultVO.bbsSeq}"/>');
+		
+		/* if('<c:out value="${resultVO.answerPermAt}"/>' == 'Y'){
+			$("input[name=answerPermAt]").prop("checked", true);
+		} */
+		
+		// 수정
+		$('#modify_btn').click(function(){
+			
+			if(!confirm('<spring:message code="wzwg.cmm.cmmMsg.CMG007"><spring:argument><spring:message code="wzwg.cmm.word.updt" /></spring:argument></spring:message>')){
+				return;
+			}else{
+				
+				var frm = document.getElementById("modifyFrm");
+				
+				// 댓글 허용 여부
+				//frm.answerPermAt.value 	= $("input[name=answerPermAt]").is(":checked") == true ? "Y" : "N";
+				
+				if(frm.nttSj.value == ''){
+					alert('<spring:message code="wzwg.cmm.cmmMsg.CMG011"><spring:argument><spring:message code="wzwg.cmm.word.sj" /></spring:argument><spring:argument><spring:message code="wzwg.cmm.word.input" /></spring:argument></spring:message>');
+					return;				
+				}
+				
+				if('<c:out value="${editorEstbsSe}"/>' == 'S'){
+					frm.nttCn.value = oEditors.getById["nttCn"].getIR();	
+					
+					if(frm.nttCn.value == ''){
+						alert('<spring:message code="wzwg.cmm.cmmMsg.CMG011">'+
+								'<spring:argument><spring:message code="wzwg.cmm.word.cn" text="contents" /></spring:argument>'+
+								'<spring:argument><spring:message code="wzwg.cmm.word.input" text="input" /></spring:argument>'+
+						      '</spring:message>');
+						oEditors.getById["nttCn"].exec("FOCUS",[]);
+						return;				
+					}
+				}
+				
+				if('<c:out value="${editorEstbsSe}"/>' == 'C'){
+					if(bEditor_nttCn.GetBodyElementsByTagName("img").length == 0 && bEditor_nttCn.GetTextValue().replace("<p>", "").replace("</p>", "") == ""){ // 크로스에디터 안의 컨텐츠 입력 확인 
+						alert('<spring:message code="wzwg.cmm.cmmMsg.CMG011">'+
+								'<spring:argument><spring:message code="wzwg.cmm.word.cn" text="contents" /></spring:argument>'+
+								'<spring:argument><spring:message code="wzwg.cmm.word.input" text="input" /></spring:argument>'+
+						      '</spring:message>');
+						bEditor_nttCn.SetFocusEditor(); // 크로스에디터 Focus 이동 
+						return false; 
+					}
+					
+					frm.nttCn.value = bEditor_nttCn.GetBodyValue("nttCn");
+				}
+
+				frm.nttCnChrctr.value = frm.nttCn.value.replace(/[<][^>]*[>]/g, "");
+				
+				frm.bbsSeq.value = frm.searchBbsSeq.value;
+				
+				//var formData = new FormData(frm);
+				
+				$("#modifyFrm").ajaxSubmit({
+			        type : 'POST'
+					, url : '<c:out value="${wzwg_contextPath}${prefix}"/>/module/ntt/faq/modifyNttInfoAjax.do'
+					, cache : false
+					, async : false
+					, mimeType: 'multipart/form-data'
+					, processData: false
+					, contentType: false
+					, success : function (result) {
+			    	  
+			    	  	var value = "";
+						
+						$(result).find("value").each(function() {  
+							value = $(this).text();  
+						});
+						
+						if(value != 'fail'){
+							
+							$("#subospecSeq").val("");
+							
+							$.ajax({
+						        type : 'POST'
+								, url : '<c:out value="${wzwg_contextPath}${prefix}"/>/module/ntt/faq/selectNttListAjax.do'
+								, dataType : 'html'
+								, data : $("#modifyFrm").serialize()
+								, success : function (data) {
+									$('#bbs_area').html(data);
+									$("#content").css("height",$(document).height());
+							     	$(window).scrollTop(0);
+								}
+								, error : function (request, status, error) {
+									alert('<spring:message code="fail.common.msg" text="error" />');
+								}
+							});
+							
+						}else{
+							alert('<spring:message code="wzwg.cmm.cmmMsg.CMG013"><spring:argument><spring:message code="wzwg.cmm.word.mngr" /></spring:argument><spring:argument><spring:message code="wzwg.cmm.word.quest" /></spring:argument></spring:message>');
+						}
+			    	  
+					}
+					, error : function (request, status, error) {
+						alert('<spring:message code="fail.common.msg" text="error" />');
+					}
+				});
+			}
+			
+		});
+
+		// 취소
+		$('#cancle_btn').click(function(){
+			
+			var returnUrl;
+			
+			returnUrl = '<c:out value="${wzwg_contextPath}${prefix}"/>/module/ntt/faq/selectNttListAjax.do';
+			
+			$('#subospecSeq').val("");
+			
+			$.ajax({
+		        type : 'POST'
+				, url : returnUrl
+				, dataType : 'html'
+				, data : $("#modifyFrm").serialize()
+				, success : function (data) {
+					$('#bbs_area').html(data);
+					$("#content").css("height",$(document).height());
+			     	$(window).scrollTop(0);
+				}
+				, error : function (request, status, error) {
+					alert('<spring:message code="fail.common.msg" text="error" />');
+				}
+			});
+		});
+		
+		// 말머리 추가
+		$('#subospec_add_btn').click(function(){
+			
+			var frm = document.getElementById("modifyFrm");
+			
+			frm.cntntsSeq.value = frm.bbsSeq.value;
+			
+			frm.action = "<c:out value='${wzwg_contextPath}${prefix}'/>/module/bbs/faq/selectBbsInc.do";
+			frm.submit();
+		});
+		
+	});
+	
+	/* 게시판 변경 - 말머리 목록 */
+	function fnChangeSubospecList(val){
+		
+		var frm = document.getElementById("modifyFrm");
+		
+		frm.searchBbsSeq.value = val;
+		
+		$.ajax({
+			  type : 'POST'
+			, dataType: 'xml'
+			, contentType : 'application/x-www-form-urlencoded; charset=UTF-8'
+			, url : '<c:out value="${wzwg_contextPath}${prefix}"/>/module/bbs/cmmn/selectBbsSubospecSelectMakeListAjax.do'
+			, cache : false
+			, async : false
+			, data : $("#modifyFrm").serialize()
+			, success : function(xml, status, request) {
+				
+				//$("#subospecSeq").find("option").remove().end().append("option value=\"\"><spring:message code='wzwg.cmm.word.ctgry02' /> <spring:message code='wzwg.cmm.word.choise' /></option>");
+				//$("#subospecSeq").append("<option value=\"\"><spring:message code='wzwg.cmm.word.ctgry02' /> <spring:message code='wzwg.cmm.word.choise' /></option>");
+				if($(xml).find("item").length == 0){
+					$('#subospecTr').remove();
+				}
+				
+				$(xml).find("item").each(function(){
+					var subospecSeq = $(this).find('name').text();
+					var subospecSj = $(this).find('value').text();
+					if(subospecSeq == '<c:out value="${resultVO.subospecSeq}"/>'){
+						$("#subospecSeq").append("<option value=\"" +subospecSeq+ "\" selected >" + subospecSj + "</option>");						
+					}else{
+						$("#subospecSeq").append("<option value=\"" +subospecSeq+ "\">" + subospecSj + "</option>");
+					}
+				});
+				
+			}
+			, error:function (data) {
+				alert('<spring:message code="fail.common.msg" text="error" />');
+			}
+	 	});
+		
+	}
+	
+	/* 게시판 말머리 변경 */
+	function fnChangeSubospec(val){
+		var frm = document.getElementById("modifyFrm");
+		
+		frm.bbsSeq.value = val;
+		
+		$.ajax({
+			  type : 'POST'
+			, dataType: 'html'
+			, url : '<c:out value="${wzwg_contextPath}${prefix}"/>/module/ntt/faq/registNttFormAjax.do'
+			, cache : false
+			, async : false
+			, data:$("#modifyFrm").serialize()
+			, success:function (data) {
+				$('#bbs_area').html(data);
+				
+				fnChangeSubospecList(val);
+				
+			}
+			, error:function (data) {
+				alert('<spring:message code="fail.common.msg" text="error" />');
+			}
+	 	});
+	}
+	
+	window.onkeydown = function() {
+
+	    var keyCode = event.keyCode;
+
+	    if(keyCode == 8
+	    		&& 'INPUT'.indexOf(event.target.nodeName.toUpperCase()) == -1 
+	    		&& 'TEXTAREA'.indexOf(event.target.nodeName.toUpperCase()) == -1) {
+
+	    	$('#cancle_btn').click();
+	    	return false;
+		}
+	}		
+	
+	function fnFileUploader(){
+		$('#modify_btn').click();
+	}
+	
+</script>
+
+		<form:form modelAttribute="resultVO" path="modifyFrm" id="modifyFrm" name="modifyFrm" method="post" enctype="multipart/form-data">
+			<form:hidden path="siteSeq" />
+			<form:hidden path="bbsSeq" />
+			<form:hidden path="nttSeq" />
+			<form:hidden path="menuSeq" value="${fn:escapeXml(paramVO.menuSeq)}" />
+			<input type="hidden" id="cntntsSeq" name="cntntsSeq" />
+			<input type="hidden" id="searchBbsSeq" name="searchBbsSeq" />
+			<input type="hidden" id="tmpTag" name="tmpTag" />
+			<input type="hidden" id="mngrAt" name="mngrAt" value="<c:out value='${paramVO.mngrAt}'/>"/>
+			<form:hidden path="cmntUseAt" />
+			<input type="hidden" id="sitecntntsSeq" name="sitecntntsSeq" value="<c:out value='${paramVO.sitecntntsSeq}'/>"/>
+			<%-- <form:input path="sitecntntsSeq" /> --%>
+			<form:hidden path="atchFilePosblAt" value="${fn:escapeXml(paramVO.atchFilePosblAt)}" />
+			<input type="hidden" id="searchKeyword" name="searchKeyword" value="<c:out value='${paramVO.searchKeyword}'/>"/>
+			<input type="hidden" id="pageIndex" name="pageIndex" value="<c:out value='${paramVO.pageIndex}'/>"/>
+		
+			<c:set var="ctgryTit"><spring:message code="wzwg.module.word.ctgryse" /></c:set>
+			<c:set var="qestnTit"><spring:message code="wzwg.cmm.word.qestn" /></c:set>
+			
+			<div class="register-box">
+				<div class="subject">
+					<table>
+					<caption id="contentsCaption"><spring:message code="wzwg.module.word.postupdt" /></caption>
+					<colgroup>
+						<col width="10%"/>
+						<col width="10%"/>
+						<col width="13%"/>
+						<col width="*"/>
+						<col width="20%"/>
+					</colgroup>
+					<thead>
+					</thead>
+					<tbody>		
+						<c:if test="${paramVO.cmntUseAt ne 'Y'}">		
+						<tr id="subospecTr">
+							<th scope="row" class="subTit">
+								<spring:message code="wzwg.cmm.word.ctgry02" />
+							</th>
+							<td colspan="4">
+								
+								<form:select path="subospecSeq" id="subospecSeq" cssClass="headId" title="${fn:escapeXml(ctgryTit)}">
+								    <form:option value=""><spring:message code="wzwg.module.word.ctgrychoise" /></form:option>
+								</form:select>	
+								
+								<!-- 관리자 기능 -->	
+								<%-- <c:if test="${paramVO.mngrAt eq 'Y'}">		
+									<a href="javascript:void(0);" id="subospec_add_btn" class="wzbtn-table btn-basic"><spring:message code="wzwg.cmm.word.ctgry02" /> <spring:message code="wzwg.cmm.word.add" /></a>
+								</c:if> --%>
+							</td>
+						</tr>
+						</c:if>
+<%-- 						<tr>
+							<th scope="row" class="subTit">
+								<spring:message code="wzwg.cmm.word.wrter" />
+							</th>
+							<td colspan="4">
+								<form:input path="ntcrNm" id="ntcrNm" style="width:50%;" dir="required" />
+							</td>
+						</tr> --%>
+						<tr>
+							<th scope="row" class="subTit">
+								<spring:message code="wzwg.cmm.word.qestn" />
+							</th>
+							<td colspan="3" style="padding-right:5px;">
+								<form:input path="nttSj" id="nttSj" name="nttSj" style="width:100%;" dir="required" title="${fn:escapeXml(qestnTit)}" />
+							</td>
+						</tr>
+						<c:if test="${paramVO.atchFilePosblAt eq 'Y'}">
+						
+							<c:if test="${fileEstbsSe eq 'B'}">
+								<c:if test="${resultVO.atchFileCnt ne '0'}">
+								<tr>
+									<th scope="row" class="subTit">
+										<spring:message code="wzwg.module.word.fileatch" />
+									</th>
+									<td colspan="4">
+										<c:import url="${wzwg_contextPath}/module/upload/file/selectFileInc.do" charEncoding="utf-8">
+											<c:param name="param_atchFileId" 		value="${resultVO.atchFileId}" />
+											<c:param name="param_updateFlag" 		value="Y" />
+											<c:param name="param_atchFileNumber" 	value="${paramVO.atchFilePosblCo}" />
+											<c:param name="param_cntntsSeq" 		value="${resultVO.bbsSeq}" />
+										</c:import>
+									</td>
+								</tr>
+								</c:if>
+								<c:if test="${resultVO.atchFileCnt eq '0'}">
+								<tr>
+									<th scope="row" class="subTit">
+										<spring:message code="wzwg.module.word.fileatch" />
+									</th>
+									<td colspan="4">
+										<c:import url="${wzwg_contextPath}/module/upload/file/selectFileInc.do" charEncoding="utf-8">
+											<c:param name="param_atchFileId" 		value="${resultVO.atchFileId}" />
+											<c:param name="param_updateFlag" 		value="N" />
+											<c:param name="param_atchFileNumber" 	value="${paramVO.atchFilePosblCo}" />
+											<c:param name="param_cntntsSeq" 		value="${resultVO.bbsSeq}" />
+										</c:import>
+									</td>
+								</tr>
+								</c:if>
+							</c:if>
+							
+							<c:if test="${fileEstbsSe eq 'C'}">
+								<tr>
+									<th scope="row" class="subTit">
+										<spring:message code="wzwg.module.word.fileatch" />
+									</th>
+									<td colspan="4">
+										<c:import url="${wzwg_contextPath}/module/upload/crossuploader/modifyForm.do" charEncoding="utf-8">
+											<c:param name="param_atchFileId"		value="${resultVO.atchFileId}" />
+											<c:param name="param_atchFileNumber" 	value="${paramVO.atchFilePosblCo}" />
+											<c:param name="param_sitecntntsSeq" 	value="${paramVO.sitecntntsSeq}" />
+											<c:param name="param_cntntsSeq" 		value="${paramVO.bbsSeq}" />
+										</c:import>
+									</td>
+								</tr>
+							</c:if>
+						
+						</c:if>
+						<tr>
+							<th scope="row" class="subTit">
+								<spring:message code="wzwg.cmm.word.answer01" />
+							</th>
+							<td colspan="4">
+								<textarea name="nttCn" id="nttCn" rows="20" style="width:100%;display:none;" title="<spring:message code="wzwg.module.word.postwritng" />"><c:out value="${resultVO.nttCn}" /></textarea>
+								<input type="hidden" name="nttCnChrctr" id="nttCnChrctr" />
+								
+								<c:import url="${wzwg_contextPath}/module/editor/editorForm.do" charEncoding="utf-8">
+									<c:param name="param_editorNm" 	value="nttCn" />
+									<c:param name="param_editorTy" 	value="custom" />
+								</c:import>
+							</td>
+						</tr>
+						<%-- <tr>
+							<th scope="row" class="subTit"><spring:message code="wzwg.module.word.skllestbs" /></th>
+							<td colspan="4">
+								<ul class="setlist">
+									<li><label><form:checkbox path="answerPermAt" name="answerPermAt" value="Y" dir="required" /> <span><spring:message code="wzwg.cmm.word.answer02" /> <spring:message code="wzwg.cmm.word.perm" /></span></label></li>
+								</ul>
+							</td>
+						</tr>	 --%>					 
+						<tr>
+							<td colspan="5" style="text-align:center !important;letter-spacing:-1px;"><spring:message code="wzwg.cmm.msg.MSG006" /></td>
+						</tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+			<div class="ctr-box">
+				<a href="javascript:void(0);" id="cancle_btn" class="wzbtn btn-del"><spring:message code="wzwg.cmm.word.cancl" /></a>
+				<a href="javascript:void(0);" id="modify_btn" class="wzbtn btn-save"><spring:message code="wzwg.cmm.word.stre" /></a>
+			</div>
+					
+		</form:form>

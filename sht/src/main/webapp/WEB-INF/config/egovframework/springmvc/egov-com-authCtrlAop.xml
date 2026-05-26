@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+ 						http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <aop:aspectj-autoproxy/>
+	<bean id="wzwg.authCtrl" class="egovframework.wzwg.cmm.authCtrl.service.AuthCtrlAspect" />
+
+	<aop:config>
+		<aop:aspect id="wzwg.authCtrlAspect" ref="wzwg.authCtrl">
+            <aop:before pointcut="execution(public * egovframework.wzwg.cmm.pageCallCtrl.web.PageCallCtrlController.selectPageCallCtrl(..))" method="shrtenUrlAuthCtrl" />
+            <aop:before pointcut="execution(public * egovframework.wzwg.cmm.pageCallCtrl.web.PageCallCtrlController.selectSubListPageCallCtrl(..))" method="subMenuAccesAuthCtrl" />
+            <aop:before pointcut="execution(public * egovframework.wzwg.cmm.pageCallCtrl.web.PageCallCtrlController.selectTemplateSubListPageCallCtrl(..))" method="subMenuAccesAuthCtrl" />
+            <aop:before pointcut="execution(public * egovframework.wzwg.module.tabMenu.web.ModuleTabMenuDataController.tabMenuModuleCallAjax(..))" method="tabMenuAccesAuthCtrl" />
+		 	<!-- 
+		 	<aop:before pointcut="execution(public * egovframework.wzwg.site.mngr.screen.web.SiteScreenController.selectSubListPageCallCtrl(..))" method="subMenuAccesAuthCtrl" />
+		 	 -->
+		</aop:aspect>
+	</aop:config>
+
+</beans>

@@ -1,0 +1,85 @@
+# 자동화 결과: Globals.java에서 참조하는 모든 프로퍼티 키와 globals.properties의 중복/누락 현황
+
+## 1. Globals.java에서 참조하는 모든 프로퍼티 키
+- Globals.OsType
+- Globals.DbType
+- Globals.MainPage
+- Globals.MngrMainPage
+- Globals.urlPrefix
+- Globals.prefix
+- Globals.sysMngrPrefix
+- Globals.mngrPrefix
+- Globals.usrSttusCrtfcCode
+- Globals.usrSttusQuitCode
+- Globals.usrSttusStopCode
+- Globals.bbsModuleTyCode
+- Globals.nomalModuleTyCode
+- Globals.schdulModuleTyCode
+- Globals.apiModuleTyCode
+- Globals.bbsFormUseBbsSeq
+- Globals.LocalIp
+- Globals.basSiteUrl
+- Globals.bass.module.seq
+- Globals.cmnt.module.seq
+- Globals.custom.module.seq
+- Globals.cntntsModuleTyCode
+- Globals.API.regist.cnt
+- Globals.popupTyCode.tmplat
+- Globals.essntlStplatTyCode
+- Globals.stplatTyCode.usrJoin
+- Globals.stplatTyCode.siteStplat
+- Globals.usrLoginFormUrl
+- Globals.login.auth.superAdmin
+- Globals.suber.siteSeq
+- Globals.homeadmin.siteSeq
+- Globals.login.auth.normalAdmin
+- Globals.nmbr.site.usrGroupSeq
+- Globals.base.site.usrGroupSeq
+- Globals.base.site.usrGroupSeq.authorSe
+- Globals.updtEstbsDe.prefeCode
+- Globals.updtEstbsDe.mngrestbsCode
+- Globals.dupLogin.prefeCode
+- Globals.sessIntvl.prefeCode
+- Globals.domnSeCode
+- Globals.useLangCode
+- Globals.quit.join
+- Globals.cmnt.appvlCode
+- Globals.cmnt.openCode
+- Globals.thumb.base.width
+- Globals.usrCrtfcPrefeCode
+- Globals.crtfc.sSiteCode
+- Globals.crtfc.sSitePassword
+- Globals.crtfc.sRequestNumber
+- Globals.crtfc.estbs.pass
+- Globals.usrReentrance.day
+- Globals.usrReCrtfc
+- lang.default
+- Globals.cntnts.pageadi.useat
+- reprsnt.siteKey
+- Globals.imprty.siteKey
+- Globals.openApi.holidayKey
+
+## 2. 누락된 키 (globals.properties에 없음)
+- Globals.prefix
+- Globals.cmnt.module.seq
+- Globals.quit.join
+- Globals.cmnt.appvlCode
+- Globals.cmnt.openCode
+- Globals.thumb.base.width
+- Globals.suber.siteSeq
+- Globals.homeadmin.siteSeq
+- reprsnt.siteKey
+
+## 3. 중복된 키 (여러 번 선언됨)
+- Globals.OsType
+- Globals.DbType
+- Globals.fileStorePath
+- Globals.bass.module.seq
+
+## 4. 조치 권고
+- 누락된 키는 반드시 globals.properties에 추가해야 NPE 방지
+- 중복된 키는 한 번만 남기고 나머지는 삭제 권장
+
+---
+
+이 파일은 자동 생성된 진단 결과입니다. 실제 적용 전 반드시 globals.properties를 백업하세요.

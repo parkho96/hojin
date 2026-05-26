@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="euc-kr" ?> 
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
+                        web-jsptaglibrary_2_0.xsd" 
+    version="2.0"> 
+
+    <description>커스텀 태그 예제</description> 
+    <display-name>클래식스타일예제</display-name> 
+    <tlib-version>1.0</tlib-version> 
+    <short-name>wizmesh</short-name> 
+    <uri>http://www.opensymphony.com/sitemesh/decorator</uri>
+    <tag> 
+        <name>head</name> 
+        <tag-class>egovframework.wzwg.cmm.wizmesh.DecoratorHead</tag-class> 
+        <body-content>empty</body-content> 
+    </tag> 
+    
+       <tag> 
+        <name>body</name> 
+        <tag-class>egovframework.wzwg.cmm.wizmesh.DecoratorBody</tag-class> 
+        <body-content>empty</body-content> 
+    </tag> 
+</taglib>  

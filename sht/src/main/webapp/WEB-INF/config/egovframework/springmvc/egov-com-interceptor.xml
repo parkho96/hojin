@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:mvc="http://www.springframework.org/schema/mvc"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+							http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+	<!--  웹로그 인터셉터 Start 
+	<bean id="egovWebLogInterceptor" class="egovframework.com.sym.log.wlg.web.EgovWebLogInterceptor" />
+	
+	<bean id="webLogMapping" class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="egovWebLogInterceptor" />
+			</list>
+		</property>
+	</bean>
+	 웹로그 인터셉터 End -->
+	
+        
+	<mvc:interceptors> 
+	     <mvc:interceptor>  
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/**/mngr/subList/**"/>
+            <mvc:exclude-mapping path="/mngr/subList/**"/>
+            <bean id="wizmeshInterceptor" class="egovframework.com.cmm.interceptor.WizmeshInterceptor">
+           </bean>
+        </mvc:interceptor>
+ 		<mvc:interceptor>  
+<!--   		    <mvc:mapping path="/module/**/**"/>  -->
+<!--   		    <mvc:mapping path="/subsite/**/subList/**"/> -->
+  		    <mvc:mapping path="/**/module/**/**"/> 
+  		    <mvc:mapping path="/**/subsite/**/subList/**"/>
+  			<bean id="authMenuInterceptor" class="egovframework.com.cmm.interceptor.AuthenticMenuInterceptor">
+  			<property name="pasageURL">
+                   <set>
+<!--                         <value>/module/cmnt/**</value> -->
+<!--                         <value>/module/scrin/**</value> -->
+<!--                         <value>/module/siteMap/**</value> -->
+<!--                         <value>/module/upload/**</value> -->
+<!--                         <value>/module/usr/**</value> -->
+<!--                         <value>/module/qustnr/**</value> -->
+<!--                         <value>/module/onlineReqst/**</value>  -->
+<!--                         <value>/module/upload/file/selectImageView.do</value> -->
+<!--                         <value>/module/upload/file/selectOrignlImageView.do</value> -->
+<!--                         <value>/opnsu/file/**</value> -->
+                        <value>/**/module/cmnt/**</value>
+                        <value>/**/module/scrin/**</value>
+                        <value>/**/module/siteMap/**</value>
+                        <value>/**/module/upload/**</value>
+                        <value>/**/module/usr/**</value>
+                        <value>/**/module/onlineQustnr/**</value>
+                        <value>/**/module/onlineReqst/**</value> 
+                        <value>/**/module/upload/file/selectImageView.do</value>
+                        <value>/**/module/upload/file/selectOrignlImageView.do</value>
+                        <value>/**/opnsu/file/**</value>
+                   </set>
+               </property>  
+           </bean>
+  		</mvc:interceptor>  
+  		
+  		 <mvc:interceptor>  
+            <mvc:mapping path="/**/mngr/**"/>
+            <mvc:mapping path="/**/sysMngr/**"/>
+            <mvc:exclude-mapping path="/**/cmnt/mngr/**"/>
+            <bean id="connIpEstbsInterceptor" class="egovframework.com.cmm.interceptor.ConnIpEstbsInterceptor" /> 
+        </mvc:interceptor>  
+  		
+  		<mvc:interceptor>  
+<!--   			<mvc:mapping path="/module/cmnt/main/**"/>   -->
+  			<mvc:mapping path="/**/module/cmnt/main/**"/>  
+			<mvc:mapping path="/**/module/bbs/unity/**"/>
+			<mvc:mapping path="/**/module/ntt/unity/**"/>
+  			<bean id="authCmntInterceptor" class="egovframework.com.cmm.interceptor.AuthenticCmntInterceptor"/>  
+  		</mvc:interceptor>  
+  		
+ 		<mvc:interceptor>  
+<!--             <mvc:mapping path="/index.do"/> -->
+<!--             <mvc:mapping path="/loginForm.do"/> -->
+<!-- 			<mvc:mapping path="/subList/**"/> -->
+            <mvc:mapping path="/**/index.do"/>
+            <mvc:mapping path="/**/loginForm.do"/>
+			<mvc:mapping path="/**/subList/**"/>
+ 			<bean id="visitrMenuInterceptor" class="egovframework.com.cmm.interceptor.VisitrMenuConectrInterceptor"/> 
+ 		</mvc:interceptor> 
+  	 
+        <mvc:interceptor> 
+            <mvc:mapping path="/*"/>
+         	<mvc:mapping path="/*/"/>
+            <mvc:mapping path="/**/*.xml"/>
+            <mvc:mapping path="/**/*.do"/>
+            <mvc:mapping path="/**/subList/**"/>
+            <mvc:mapping path="/**/subsite/**"/>
+            <mvc:mapping path="/**/module/cmnt/**"/>
+            <mvc:mapping path="/edup/cmm/mber/sbscrb/selectSbscrbUsrTy.do"/>
+            <mvc:exclude-mapping path="/**/null/**" />
+            <mvc:exclude-mapping path="/**/module/upload/**" />
+            <mvc:exclude-mapping path="/**/module/upload/file/selectImageView.do" />    
+            <mvc:exclude-mapping path="/**/actionLogout.do" />
+            <mvc:exclude-mapping path="/smartEditor2.8.2.1/**/*.do" />
+            <bean id="unityConectCtrlInterceptor" class="egovframework.wzwg.cmm.conectCtrl.web.ConectCtrlInterceptor">
+               <property name="pasageURL">
+                   <set>   
+                        <value>/**/licenseFail.do</value>  
+                        <value>/**/urlFail.do</value>  
+                        <value>/**/*mngrLoginForm.do</value>
+                        <value>/**/cmm/mber/login/**.do</value>
+                        <value>/**/loginForm.do</value>
+                        <value>/**/*Ajax.do</value>
+                        <value>/**/opertntc/selectSiteOpertntcDetail.do</value>
+                        <value>/**/opertntc/selectSysOpertntcDetail.do</value>
+                        <value>/**/module/upload/file/selectImageView.do</value>
+                        <value>/**/module/upload/file/selectOrignlImageView.do</value>
+                        <value>/**/module/upload/**</value>
+                        <value>/**/opnsu/file/**</value>              
+                        <value>/**/opertntc/selectSiteAblEnnc.do</value>
+                        <value>/**/smartEditor2Skin.do</value>
+					</set>
+               </property>
+            </bean>
+        </mvc:interceptor>
+        
+ 		<mvc:interceptor>  
+ 			<mvc:mapping path="/mngr/**"/> 
+ 			<mvc:mapping path="/**/mngr/**"/>
+            <mvc:exclude-mapping path="/mngr/selectDashboardMain.do" /> 
+			<mvc:exclude-mapping path="/**/cmnt/mngr/**" />
+            <mvc:exclude-mapping path="/**/mngr/selectDashboardMain.do" />
+            <mvc:exclude-mapping path="/**/module/cmm/snsCnrs/selectSnsCnrsPopup.do" />
+            <mvc:exclude-mapping path="/**/module/upload/**" />
+            <mvc:exclude-mapping path="/mngr/menu/selectMngrLocationView.do" />
+ 			<bean id="mngrAuthInterceptor" class="egovframework.com.cmm.interceptor.MngrAuthInterceptor"></bean> 
+ 		</mvc:interceptor>  
+ 	 
+ 		<mvc:interceptor>  
+ 			<mvc:mapping path="/**/siteMngr/**"/> 
+ 			<mvc:mapping path="/**/usrMngr/**"/>
+ 			<mvc:mapping path="/**/screen/**"/>
+ 			<mvc:mapping path="/**/cntnts/cntntsInfo/**"/>
+ 			<mvc:mapping path="/**/menu/linkGrp/selectLinkGrpList.do"/>
+ 			<mvc:mapping path="/**/stat/**"/> 			
+ 			<mvc:mapping path="/**/selectFileStore.do"/>
+ 			<mvc:mapping path="/**/*BassInfo*.do"/>
+ 			<mvc:mapping path="/**/cntnts/cntntsAuth/selectCntntsAuthListAjax.do"/>
+ 			<mvc:mapping path="/**/module/ntt/unity/selectNttRecycleListAjax.do"/>
+ 			<mvc:mapping path="/**/module/upload/fileMngr/fileEstbs/selectFileEstbsMngrForm.do"/>
+ 			<mvc:mapping path="/**/cntnts/cntntsUsrAuth/selectCntntsUsrAuthListAjax.do"/>
+ 			<mvc:mapping path="/**/module/upload/imageStore/imageForm.do"/>
+ 			<mvc:exclude-mapping path="/usr/**" />
+ 			<mvc:exclude-mapping path="/subMngr/**" />
+ 			<mvc:exclude-mapping path="/**/siteMngr/siteInfo/siteFtrMenuJsonAjax.do" />
+ 			<bean id="mngrEtcAuthInterceptor" class="egovframework.com.cmm.interceptor.MngrEtcAuthInterceptor"></bean> 
+ 		</mvc:interceptor>
+         
+        <mvc:interceptor>  
+<!--   		    <mvc:mapping path="/index.do"/>  -->
+<!--   		    <mvc:mapping path="/subList/**"/> -->
+<!--   		    <mvc:mapping path="/subsite/**"/> -->
+<!--         	<mvc:exclude-mapping path="/subsite/module/**" /> -->
+  		    <mvc:mapping path="/**/index.do"/> 
+  		    <mvc:mapping path="/**/subList/**"/>
+  		    <mvc:mapping path="/**/subsite/**"/>
+        	<mvc:exclude-mapping path="/**/subsite/module/**" />
+  			<bean id="workInterceptor" class="egovframework.com.cmm.interceptor.WorkingInterceptor">
+  			<property name="pasageURL">
+                   <set>
+<!--                         <value>/working.do</value>   -->
+                        <value>/**/working.do</value>  
+                        <value>/**/*MngrLogin.do</value>
+                        <value>/**/*LoginForm.do</value>
+                   </set>
+               </property>  
+            </bean>
+  		</mvc:interceptor>  
+        <mvc:interceptor>  
+            <mvc:mapping path="/**/*.do"/>
+            <bean id="sslInterceptor" class="egovframework.com.cmm.interceptor.SslInterceptor">
+            <property name="pasageURL">
+                <set>
+<!--                     <value>/loginForm.do</value>   -->
+<!--                     <value>/mngrLoginForm.do</value> -->
+<!--                     <value>/cmm/mber/</value> -->
+<!--                     <value>/cmm/mber/login/mngrLoginForm.do</value> -->
+<!--                     <value>/mngr/</value> -->
+<!--                     <value>/sysMngr/</value> -->
+<!--                     <value>/actionSnsLogin.do</value> -->
+<!--                     <value>/actionLogin.do</value> -->
+<!--                     <value>/searchIdForm.do</value> -->
+<!--                     <value>/searchPwForm.do</value> -->
+<!--                     <value>/modifyPwUpdt.do</value> -->
+<!--                     <value>/modifyPwUpdtDe.do</value> -->
+<!--                     <value>/cmm/mber/login/actionMngrLogin.do</value> -->
+                    <value>/**/loginForm.do</value>  
+                    <value>/**/mngrLoginForm.do</value>
+                    <value>/**/cmm/mber/</value>
+                    <value>/**/cmm/mber/login/mngrLoginForm.do</value>
+                    <value>/**/mngr/</value>
+                    <value>/**/sysMngr/</value>
+                    <value>/**/actionSnsLogin.do</value>
+                    <value>/**/actionLogin.do</value>
+                    <value>/**/searchIdForm.do</value>
+                    <value>/**/searchPwForm.do</value>
+                    <value>/**/modifyPwUpdt.do</value>
+                    <value>/**/modifyPwUpdtDe.do</value>
+                    <value>/**/cmm/mber/login/actionMngrLogin.do</value>
+                </set>
+            </property>  
+            </bean>
+        </mvc:interceptor>  
+         <mvc:interceptor>   
+            <mvc:mapping path="/**/index.do"/> 
+  		    <mvc:mapping path="/**/subList/**"/>
+  		     <mvc:mapping path="/**/*.do"/>
+  		     <mvc:exclude-mapping path="/**/actionLogin.do" />
+  		     <mvc:exclude-mapping path="/**/actionMngrLogin.do" />
+  		     <mvc:exclude-mapping path="/**/menu/modifySiteMenuMngrOrdrAjax.do" />
+            <bean id="SiteUserlInterceptor" class="egovframework.com.cmm.interceptor.SiteUserInterceptor">
+            <property name="pasageURL">
+                <set>
+<!--                     <value>/loginForm.do</value>   -->
+<!--                     <value>/mngrLoginForm.do</value> -->
+<!--                     <value>/cmm/mber/</value> -->
+<!--                     <value>/cmm/mber/login/mngrLoginForm.do</value> -->
+<!--                     <value>/mngr/</value> -->
+<!--                     <value>/sysMngr/</value> -->
+<!--                     <value>/actionSnsLogin.do</value> -->
+<!--                     <value>/actionLogin.do</value> -->
+<!--                     <value>/searchIdForm.do</value> -->
+<!--                     <value>/searchPwForm.do</value> -->
+<!--                     <value>/modifyPwUpdt.do</value> -->
+<!--                     <value>/modifyPwUpdtDe.do</value> -->
+<!--                     <value>/cmm/mber/login/actionMngrLogin.do</value> -->
+                    <value>/**/loginForm.do</value>  
+                    <value>/**/mngrLoginForm.do</value>
+                    <value>/**/cmm/mber/</value>
+                    <value>/**/cmm/mber/login/mngrLoginForm.do</value>
+                    <value>/**/mngr/</value>
+                    <value>/**/sysMngr/</value>
+                    <value>/**/actionSnsLogin.do</value>
+                    <value>/**/actionLogin.do</value>
+                    <value>/**/searchIdForm.do</value>
+                    <value>/**/searchPwForm.do</value>
+                    <value>/**/modifyPwUpdt.do</value>
+                    <value>/**/modifyPwUpdtDe.do</value>
+                    <value>/**/cmm/mber/login/actionMngrLogin.do</value>
+                </set>
+            </property>  
+            </bean>
+        </mvc:interceptor>  
+		<mvc:interceptor>  
+        	<mvc:mapping path="/**/index.do"/>
+            <mvc:mapping path="/**/subList/**"/>
+            <mvc:exclude-mapping path="/**/**.jsp" />
+            <bean id="reprsntSiteInterceptor" class="egovframework.com.cmm.interceptor.ReprsntSiteInterceptor">
+           	</bean>
+        </mvc:interceptor>
+     	<mvc:interceptor>  
+        	<mvc:mapping path="/**/index.do"/>
+        	<mvc:mapping path="/**/loginForm.do"/>
+            <mvc:mapping path="/**/subList/**"/>
+            <mvc:mapping path="/**/subsite/**"/>
+            <bean id="setUnitySessionDataInterceptor" class="egovframework.com.cmm.interceptor.SetUnitySessionDataInterceptor">
+           	</bean>
+        </mvc:interceptor>
+	</mvc:interceptors>
+</beans>

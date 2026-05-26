@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+       <modelVersion>4.0.0</modelVersion>
+       <groupId>egovframework.com</groupId>
+       <artifactId>sht</artifactId>
+       <packaging>war</packaging>
+       <version>1.0.0</version>
+       <name>sht</name>
+       <url>http://www.egovframe.go.kr</url>
+
+       <properties>
+	       <!-- Java 17 및 Spring 6 설정 -->
+	       <java.version>17</java.version>
+	       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	       <spring.maven.artifact.version>6.1.13</spring.maven.artifact.version>
+	       <org.egovframe.rte.version>5.0.0</org.egovframe.rte.version>
+	       <jackson.version>2.17.0</jackson.version>
+	       <log4j2.version>2.23.1</log4j2.version>
+       </properties>
+
+       <repositories>
+	<!-- repository 순서중요 -->
+	<repository>
+	    <id>project-local-repo</id>
+	    <name>Project Local Repository</name>
+	    <url>file://${project.basedir}/lib</url>
+		       <releases>
+			       <checksumPolicy>ignore</checksumPolicy>
+		       </releases>
+	</repository>
+	       <repository>
+		       <id>mvn2s</id>
+		       <url>https://repo1.maven.org/maven2/</url>
+		       <releases>
+			       <enabled>true</enabled>
+		       </releases>
+		       <snapshots>
+			       <enabled>true</enabled>
+		       </snapshots>
+	       </repository>
+	       <repository>
+		       <id>egovframe</id>
+		       <url>https://maven.egovframe.go.kr/maven/</url>
+		       <releases>
+			       <enabled>true</enabled>
+		       </releases>
+		       <snapshots>
+			       <enabled>false</enabled>
+		       </snapshots>
+	       </repository>
+       </repositories>
+
+       <dependencies>
+	       <!-- 표준프레임워크 5.0 실행환경 -->
+	       <dependency>
+		       <groupId>jakarta.validation</groupId>
+		       <artifactId>jakarta.validation-api</artifactId>
+		       <version>3.0.2</version>
+	       </dependency>
+	       <dependency>
+	    <groupId>org.egovframe.rte</groupId>
+	    <artifactId>egovframe-rte-ptl-mvc</artifactId>
+	    <version>${org.egovframe.rte.version}</version>
+	    <exclusions>
+		<exclusion>
+		    <artifactId>commons-logging</artifactId>
+		    <groupId>commons-logging</groupId>
+		</exclusion>
+	    </exclusions>
+	</dependency>
+	<dependency>
+	    <groupId>org.egovframe.rte</groupId>
+	    <artifactId>egovframe-rte-psl-dataaccess</artifactId>
+	    <version>${org.egovframe.rte.version}</version>
+	    <exclusions>
+		<exclusion>
+		    <groupId>org.egovframe.rte</groupId>
+		    <artifactId>egovframe-rte-fdl-logging</artifactId>
+		</exclusion>
+	    </exclusions>
+	</dependency>
+	<dependency>
+	    <groupId>org.egovframe.rte</groupId>
+	    <artifactId>egovframe-rte-fdl-property</artifactId>
+	    <version>${org.egovframe.rte.version}</version>
+	</dependency>
+	<dependency>
+	    <groupId>org.egovframe.rte</groupId>
+	    <artifactId>egovframe-rte-fdl-excel</artifactId>
+	    <version>${org.egovframe.rte.version}</version>
+	</dependency>
+	       <!-- cryptography 충돌 -->
+	   <dependency>
+		   <groupId>org.egovframe.rte</groupId>
+		   <artifactId>egovframe-rte-fdl-crypto</artifactId>
+		   <version>${org.egovframe.rte.version}</version>
+	   </dependency>
+	<dependency>
+	    <groupId>org.egovframe.rte</groupId>
+	    <artifactId>egovframe-rte-fdl-idgnr</artifactId>
+	    <version>${org.egovframe.rte.version}</version>
+	</dependency>
+
+	       <!-- Jakarta EE 10 (Servlet 6.0, JSTL 3.0) -->
+	       <dependency>
+		       <groupId>jakarta.servlet</groupId>
+		       <artifactId>jakarta.servlet-api</artifactId>
+		       <version>6.0.0</version>
+		       <scope>provided</scope>
+	       </dependency>
+	       <dependency>
+		       <groupId>jakarta.servlet.jsp</groupId>
+		       <artifactId>jakarta.servlet.jsp-api</artifactId>
+		       <version>3.1.1</version> <!-- Jakarta EE 10 기준 -->
+		       <scope>provided</scope>
+	       </dependency>
+	       <dependency>
+		       <groupId>jakarta.servlet.jsp.jstl</groupId>
+		       <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+		       <version>3.0.0</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>org.glassfish.web</groupId>
+		       <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+		       <version>3.0.1</version>
+	       </dependency>
+
+	       <!-- Databases & JDBC -->
+	       <dependency>
+		       <groupId>org.mariadb.jdbc</groupId>
+		       <artifactId>mariadb-java-client</artifactId>
+		       <version>3.3.3</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>org.postgresql</groupId>
+		       <artifactId>postgresql</artifactId>
+		       <version>42.7.2</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>com.oracle.database.jdbc</groupId>
+		       <artifactId>ojdbc8</artifactId>
+		       <version>21.3.0.0</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>org.hsqldb</groupId>
+		       <artifactId>hsqldb</artifactId>
+		       <version>2.7.2</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>commons-dbcp</groupId>
+		       <artifactId>commons-dbcp</artifactId>
+		       <version>1.4</version>
+	       </dependency>
+
+	       <!-- JSON & Jackson (중복 제거 및 최신화) -->
+	       <dependency>
+		       <groupId>com.fasterxml.jackson.core</groupId>
+		       <artifactId>jackson-databind</artifactId>
+		       <version>${jackson.version}</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>com.googlecode.json-simple</groupId>
+		       <artifactId>json-simple</artifactId>
+		       <version>1.1.1</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>net.sf.json-lib</groupId>
+		       <artifactId>json-lib</artifactId>
+		       <version>2.4</version>
+		       <classifier>jdk15</classifier>
+	       </dependency>
+
+	       <!-- Logging: SLF4J 2.x API + Log4j2 구현(log4j-slf4j2-impl). log4jdbc의 SLF4J 1.7과 섞이면 StaticLoggerBinder 오류 발생 -->
+	       <dependency>
+		       <groupId>org.slf4j</groupId>
+		       <artifactId>slf4j-api</artifactId>
+		       <version>2.0.16</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>org.slf4j</groupId>
+		       <artifactId>jcl-over-slf4j</artifactId>
+		       <version>2.0.16</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>org.apache.logging.log4j</groupId>
+		       <artifactId>log4j-core</artifactId>
+		       <version>${log4j2.version}</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>org.apache.logging.log4j</groupId>
+		       <artifactId>log4j-api</artifactId>
+		       <version>${log4j2.version}</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>org.apache.logging.log4j</groupId>
+		       <artifactId>log4j-slf4j2-impl</artifactId>
+		       <version>${log4j2.version}</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>org.bgee.log4jdbc-log4j2</groupId>
+		       <artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>
+		       <version>1.16</version>
+		       <exclusions>
+			       <exclusion>
+				       <groupId>org.slf4j</groupId>
+				       <artifactId>slf4j-api</artifactId>
+			       </exclusion>
+		       </exclusions>
+	       </dependency>
+
+		   <!-- Utilities -->
+		   <dependency>
+			   <groupId>com.ibm.icu</groupId>
+			   <artifactId>icu4j</artifactId>
+			   <version>73.2</version>
+		   </dependency>
+	       <dependency>
+		       <groupId>org.apache.commons</groupId>
+		       <artifactId>commons-lang3</artifactId>
+		       <version>3.14.0</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>commons-codec</groupId>
+		       <artifactId>commons-codec</artifactId>
+		       <version>1.16.1</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>com.squareup.okhttp3</groupId>
+		       <artifactId>okhttp</artifactId>
+		       <version>4.12.0</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>org.jsoup</groupId>
+		       <artifactId>jsoup</artifactId>
+		       <version>1.17.2</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>net.sourceforge.ajaxtags</groupId>
+		       <artifactId>ajaxtags</artifactId>
+		       <version>1.5-beta-0.2</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>org.jxls</groupId>
+		       <artifactId>jxls-poi</artifactId>
+		       <version>2.14.0</version> <!-- POI 5.x와 호환되는 버전 -->
+	       </dependency>
+	       <dependency>
+		       <groupId>org.apache.commons</groupId>
+		       <artifactId>commons-compress</artifactId>
+		       <version>1.26.0</version>
+	       </dependency>
+		<dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+
+	       <!-- Excel (POI) -->
+	       <dependency>
+		       <groupId>org.apache.poi</groupId>
+		       <artifactId>poi-ooxml</artifactId>
+		       <version>5.2.5</version>
+	       </dependency>
+
+	       <dependency>
+		   <groupId>net.coobird</groupId>
+		   <artifactId>thumbnailator</artifactId>
+		   <version>0.4.8</version>
+	       </dependency>
+	       <dependency>
+		       <groupId>com.microsoft.sqlserver</groupId>
+		       <artifactId>mssql-jdbc</artifactId>
+		       <version>12.6.1.jre11</version>
+	       </dependency>
+	<dependency>
+	    <groupId>dggb.util</groupId>
+	    <artifactId>dggbUtil</artifactId>
+	    <version>1.0</version>
+	</dependency>
+
+	       <!-- System Scoped Dependencies (로컬 파일 참조) -->
+	<dependency>
+	    <groupId>wzwg.lcns.lib</groupId>
+	    <artifactId>WZWG_CMM</artifactId>
+	    <version>1.0</version>
+	    <scope>system</scope>
+	    <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/WZWG_CMM.jar</systemPath>
+	</dependency>
+	       <dependency>
+		       <groupId>tibero6-jdbc-14</groupId>
+		       <artifactId>tibero6-jdbc-14</artifactId>
+		       <version>6.0.0</version>
+		       <scope>system</scope>
+		       <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/tibero6-jdbc-14.jar</systemPath>
+	       </dependency>
+	       <dependency>
+		       <groupId>org.ligoj</groupId>
+		       <artifactId>simplecaptcha</artifactId>
+		       <version>2.0.0</version>
+		       <scope>system</scope>
+		       <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/simplecaptcha-2.0.0.jar</systemPath>
+	       </dependency>
+	       <dependency>
+	    <groupId>nice</groupId>
+	    <artifactId>nice</artifactId>
+	    <version>1.0</version>
+	    <scope>system</scope>
+	    <systemPath>${project.basedir}/src/main/webapp/WEB-INF/lib/NiceID.jar</systemPath>
+	</dependency>
+
+	       <!-- 기타 필수 라이브러리 -->
+	<dependency>
+	    <groupId>jakarta.xml.bind</groupId>
+	    <artifactId>jakarta.xml.bind-api</artifactId>
+	    <version>4.0.0</version>
+	</dependency>
+
+	<!-- JAXB Runtime (구현체) -->
+	<dependency>
+	    <groupId>com.sun.xml.bind</groupId>
+	    <artifactId>jaxb-impl</artifactId>
+	    <version>4.0.3</version>
+	    <scope>runtime</scope>
+	</dependency>
+
+	       <dependency>
+		       <groupId>com.sun.mail</groupId>
+		       <artifactId>jakarta.mail</artifactId>
+		       <version>2.0.1</version>
+	       </dependency>
+
+	<dependency>
+	    <groupId>com.github.scribejava</groupId>
+	    <artifactId>scribejava-apis</artifactId>
+	    <version>8.3.3</version> <!-- 최신 안정화 버전 권장 -->
+	</dependency>
+
+	       <!-- JCache(JSR-107) 표준 API : Spring JCacheCacheManager 와 EhCache 3 를 연결 -->
+	       <dependency>
+		       <groupId>javax.cache</groupId>
+		       <artifactId>cache-api</artifactId>
+		       <version>1.1.1</version>
+	       </dependency>
+
+	       <!-- EhCache 3 (Jakarta EE 9+ 빌드) : 실제 캐시 엔진. ehcache.xml 설정을 사용 -->
+	       <!-- 옛 jaxb-runtime(http 저장소 의존)은 제외하고, 아래 표준 Jakarta JAXB 사용 -->
+	       <dependency>
+		       <groupId>org.ehcache</groupId>
+		       <artifactId>ehcache</artifactId>
+		       <version>3.10.8</version>
+		       <classifier>jakarta</classifier>
+		       <exclusions>
+			       <exclusion>
+				       <groupId>org.glassfish.jaxb</groupId>
+				       <artifactId>jaxb-runtime</artifactId>
+			       </exclusion>
+		       </exclusions>
+	       </dependency>
+
+	       <!-- Jakarta JAXB API : EhCache 3 가 ehcache.xml 파싱할 때 필요 -->
+	       <dependency>
+		       <groupId>jakarta.xml.bind</groupId>
+		       <artifactId>jakarta.xml.bind-api</artifactId>
+		       <version>4.0.2</version>
+	       </dependency>
+
+	       <!-- Jakarta JAXB 구현체 : API 의 실제 런타임. Maven Central(HTTPS) 정상 제공 -->
+	       <dependency>
+		       <groupId>org.glassfish.jaxb</groupId>
+		       <artifactId>jaxb-runtime</artifactId>
+		       <version>4.0.5</version>
+	       </dependency>
+
+	       <dependency>
+		       <groupId>org.projectlombok</groupId>
+		       <artifactId>lombok</artifactId>
+		       <version>1.18.30</version>
+		       <scope>provided</scope>
+	       </dependency>
+       </dependencies>
+
+       <build>
+	       <plugins>
+		       <plugin>
+			       <groupId>org.apache.maven.plugins</groupId>
+			       <artifactId>maven-compiler-plugin</artifactId>
+			       <version>3.11.0</version>
+			       <configuration>
+				       <source>17</source>
+				       <target>17</target>
+				       <encoding>UTF-8</encoding>
+				       <parameters>true</parameters>
+		    <!-- LCNS 컴파일 하기 위해 특정 소스만 컴파일 사용후 주석 처리 -->
+		    <!--<includes>
+			<include>/egovframework/wzwg/cmm/util/snsAPI/*</include>
+		    </includes>-->
+			       </configuration>
+		       </plugin>
+		       <plugin>
+			       <groupId>org.apache.maven.plugins</groupId>
+			       <artifactId>maven-war-plugin</artifactId>
+			       <version>3.4.0</version>
+		       </plugin>
+	       </plugins>
+       </build>
+</project>
